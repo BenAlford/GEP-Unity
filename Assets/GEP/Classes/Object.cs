@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class Object : MonoBehaviour
+public class Object : MonoBehaviour, IObject
 {
-    public List<ItemDef> objects;
+    public ItemDef item;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +14,15 @@ public class Object : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void Use()
+    {
+
+    }
+
+    public void Hover()
+    {
+
     }
 }

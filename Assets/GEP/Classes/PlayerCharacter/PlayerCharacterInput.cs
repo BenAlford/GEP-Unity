@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerCharacterInput : MonoBehaviour
 {
     Inventory inv;
+    PlayerRaycast pRaycast;
 
     [Header("Character Input Values")]
     public Vector2 move;
@@ -23,6 +24,7 @@ public class PlayerCharacterInput : MonoBehaviour
     private void Awake()
     {
         inv = GetComponent<Inventory>();
+        pRaycast = GameObject.FindGameObjectWithTag("RaycastStart").GetComponent<PlayerRaycast>();
     }
 
     public void OnMove(InputValue value)
@@ -72,13 +74,22 @@ public class PlayerCharacterInput : MonoBehaviour
     {
         if (value.isPressed)
         {
-            if (!inv.IsSelectedSlotEmpty())
-            {
-                ItemDef current_item = inv.GetSelectedSlotsItem();
-                GameObject b = Instantiate(current_item.prefab);
-                b.transform.position = transform.position;
-                inv.RemoveItem();
-            }
+            inv.UseItem();
+            //if (!inv.IsSelectedSlotEmpty())
+          //  {
+        //        ItemDef current_item = inv.GetSelectedSlotsItem();
+      //          GameObject b = Instantiate(current_item.prefab);
+    //            b.transform.position = pRaycast.GetCast().point;
+  //              inv.RemoveItem();
+//            }
+        }
+    }
+
+    public void OnBreak(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            pRaycast.GetCast();
         }
     }
 
