@@ -20,7 +20,6 @@ public class PlayerRaycast : MonoBehaviour
         // Does the ray intersect any objects excluding the player layer
         if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity, layerMask))
         {
-            Debug.Log(hit.collider.gameObject.name);
             Debug.DrawRay(transform.position, transform.forward * hit.distance, Color.yellow);
         }
         else
