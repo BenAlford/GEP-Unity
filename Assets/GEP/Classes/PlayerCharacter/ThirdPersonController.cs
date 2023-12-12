@@ -82,6 +82,8 @@ namespace StarterAssets
         private float _rotationVelocity;
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
+        bool forceJump = false;
+        float forceJumpMultiplier = 1;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -166,6 +168,7 @@ namespace StarterAssets
             // set sphere position, with offset
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
                 transform.position.z);
+
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
 
@@ -267,7 +270,16 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
-            if (Grounded)
+            if (forceJump)
+            {
+                _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * forceJumpMultiplier * Gravity);
+                forceJump = false;
+                if (_hasAnimator)
+                {
+                    _animator.SetBool(_animIDJump, true);
+                }
+            }
+            else if (Grounded)
             {
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
@@ -296,6 +308,10 @@ namespace StarterAssets
                     {
                         _animator.SetBool(_animIDJump, true);
                     }
+                }
+                else
+                {
+                    forceJump = false;
                 }
 
                 // jump timeout
@@ -373,6 +389,13 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        public void ForceJump(float multiplier)
+        {
+            Debug.Log("u");
+            forceJump = true;
+            forceJumpMultiplier = multiplier;
         }
     }
 }

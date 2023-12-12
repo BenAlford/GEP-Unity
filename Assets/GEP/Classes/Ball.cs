@@ -2,21 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ball : MonoBehaviour, IObject
+public class Ball : ObjectBase
 {
-    public GameObject item;
     PlayerRaycast pRaycast;
-    bool placeable = false;
 
     private void Awake()
     {
         pRaycast = GameObject.FindGameObjectWithTag("RaycastStart").GetComponent<PlayerRaycast>();
     }
 
-    public void Hover()
+    public override void Hover()
     {
         transform.position = pRaycast.player.transform.position + pRaycast.GetDirection() * 2;
-        Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, transform.localScale / 2.001f, transform.rotation);
+        Collider[] hitColliders = Physics.OverlapSphere(gameObject.transform.position, transform.localScale.x / 2.001f);
         if (hitColliders.Length > 0)
         {
             GetComponent<Renderer>().enabled = false;
@@ -29,16 +27,17 @@ public class Ball : MonoBehaviour, IObject
         }
     }
 
-    public void Activate()
+    public override void Activate()
     {
         GetComponent<Collider>().enabled = false;
         Color m = GetComponent<Renderer>().material.color;
         m.a = 0.5f;
         GetComponent<Renderer>().material.color = m;
         GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Renderer>().enabled = false;
     }
 
-    public bool Use()
+    public override bool Use()
     {
         if (placeable)
         {
@@ -48,7 +47,7 @@ public class Ball : MonoBehaviour, IObject
             GetComponent<Renderer>().material.color = m;
             GetComponent<Rigidbody>().useGravity = true;
 
-            GetComponent<Rigidbody>().AddForce(pRaycast.GetDirection() * 100, ForceMode.Impulse);
+            GetComponent<Rigidbody>().AddForce(pRaycast.GetDirection() * 150, ForceMode.Impulse);
             return true;
         }
 

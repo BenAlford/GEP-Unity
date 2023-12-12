@@ -103,15 +103,41 @@ public class Inventory : MonoBehaviour
             // tries to add the item to the slot
             bool added_item = inventory[slots.Last()].TryAdd();
 
+            // if it failed try to add it to a previous slot
+            if (!added_item && slots.Count > 1)
+            {
+                for (int i = 0; i < slots.Count - 1; i++)
+                {
+                    if (inventory[slots[i]].TryAdd())
+                    {
+                        // resorts the list to put this slot at the end 
+                        int pos = slots[i];
+                        slots.RemoveAt(i);
+                        slots.Add(pos);
+                        added_item = true;
+                        break;
+                    }
+                }
+            }
+
             // if it failed and the inventry isn't full
             if (!added_item && next_free != -1)
             {
-                //add it to the next available slot
-                slots.Add(next_free);
-                inventory[next_free].SetItem(item, 1);
 
-                // find next available slot for next time
-                FindNextFree();
+                // add it to the next available slot
+                if (!added_item)
+                {
+                    slots.Add(next_free);
+                    inventory[next_free].SetItem(item, 1);
+
+                    if (next_free == selected_slot)
+                    {
+                        SetupCurrentObject();
+                    }
+
+                    // find next available slot for next time
+                    FindNextFree();
+                }
             }
         }
         // if it does not exist yet in the inventory and it is not full

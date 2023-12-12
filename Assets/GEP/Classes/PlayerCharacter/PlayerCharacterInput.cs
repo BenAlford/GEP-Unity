@@ -89,7 +89,16 @@ public class PlayerCharacterInput : MonoBehaviour
     {
         if (value.isPressed)
         {
-            pRaycast.GetCast();
+            RaycastHit hit = pRaycast.GetCast();
+            if (hit.collider != null)
+            {
+                IObject objInterface = hit.collider.gameObject.GetComponent<IObject>();
+                if (objInterface != null)
+                {
+                    objInterface.Break();
+                }
+            }
+
         }
     }
 

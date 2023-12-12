@@ -4,4 +4,6 @@ public interface IObject
     public bool Use();
 
     public void Hover();
+
+    public void Break();
 }

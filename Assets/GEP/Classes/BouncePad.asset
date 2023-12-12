@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 529de9163a3e1ac418ed6ca62d0b7fca, type: 3}
+  m_Name: BouncePad
+  m_EditorClassIdentifier: 
+  max_stack_size: 1
+  item_name: Bounce Pad
+  description: Boing
+  prefab: {fileID: 737869449424771991, guid: 64720996bc8f40d439be0989ac2a51a8, type: 3}

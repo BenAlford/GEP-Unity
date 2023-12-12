@@ -4,19 +4,21 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Block : MonoBehaviour, IObject
+public class Block : ObjectBase
 {
-    public GameObject item;
-    PlayerRaycast pRaycast;
+    protected PlayerRaycast pRaycast;
 
-    bool placeable = false;
+    protected bool rotateOnSurface;
+
+    protected Vector3 wallNormal;
 
     private void Awake()
     {
         pRaycast = GameObject.FindGameObjectWithTag("RaycastStart").GetComponent<PlayerRaycast>();
+        rotateOnSurface = true;
     }
 
-    public bool Use()
+    public override bool Use()
     {
         if (placeable)
         {
@@ -29,7 +31,7 @@ public class Block : MonoBehaviour, IObject
         return false;
     }
 
-    public void Hover()
+    public override void Hover()
     {
 
         RaycastHit hitWall = pRaycast.GetCast();
@@ -37,12 +39,15 @@ public class Block : MonoBehaviour, IObject
         {
             GetComponent<Renderer>().enabled = true;
             Vector3 posWall = hitWall.point;
-            Vector3 wallNormal = hitWall.normal;
+            wallNormal = hitWall.normal;
             transform.position = pRaycast.GetCast().point;
-            transform.rotation = Quaternion.LookRotation(pRaycast.GetCast().normal);
-            transform.position += pRaycast.GetCast().normal * (transform.localScale.x / 2);
+            if (rotateOnSurface)
+            {
+                transform.rotation = Quaternion.LookRotation(pRaycast.GetCast().normal);
+            }
+            transform.position += pRaycast.GetCast().normal * (transform.localScale.y / 2);
 
-            Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, transform.localScale / 2.001f, transform.rotation);
+            Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, transform.localScale / 2.01f, transform.rotation);
             //int count = 0;
             //while (hitColliders.Length > 0 && count < 3)
             //{
@@ -122,11 +127,12 @@ public class Block : MonoBehaviour, IObject
         }
     }
 
-    public void Activate()
+    public override void Activate()
     {
         GetComponent<Collider>().enabled = false;
         Color m = GetComponent<Renderer>().material.color;
         m.a = 0.5f;
         GetComponent<Renderer>().material.color = m;
+        GetComponent<Renderer>().enabled = false;
     }
 }
