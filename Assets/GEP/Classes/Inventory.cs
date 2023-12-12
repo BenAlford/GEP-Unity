@@ -125,9 +125,7 @@ public class Inventory : MonoBehaviour
 
             if (next_free == selected_slot)
             {
-                currentObject = Instantiate(item.prefab);
-                currentObjectInterface = currentObject.GetComponent<IObject>();
-                currentObject.GetComponent<Collider>().enabled = false;
+                SetupCurrentObject();
             }
 
             // find next available slot for next time
@@ -149,42 +147,42 @@ public class Inventory : MonoBehaviour
     {
         if (!inventory[selected_slot].IsEmpty())
         {
-            currentObjectInterface.Use();
-            // tries to remove the item
-            bool removed_item = inventory[selected_slot].TryRemove();
-
-            // if it fails then this slot is now empty
-            if (!removed_item)
+            if (currentObjectInterface.Use())
             {
-                List<int> slots;
-                ItemDef item = inventory[selected_slot].GetItem();
-                if (inventoryDictionary.TryGetValue(item, out slots))
+                // tries to remove the item
+                bool removed_item = inventory[selected_slot].TryRemove();
+
+                // if it fails then this slot is now empty
+                if (!removed_item)
                 {
-                    // clear the slot
-                    inventory[selected_slot].Clear();
-
-                    // set next_free to this slot's position if it is smaller
-                    slots.Remove(selected_slot);
-                    if (selected_slot < next_free)
+                    List<int> slots;
+                    ItemDef item = inventory[selected_slot].GetItem();
+                    if (inventoryDictionary.TryGetValue(item, out slots))
                     {
-                        next_free = selected_slot;
-                    }
+                        // clear the slot
+                        inventory[selected_slot].Clear();
 
-                    currentObject = null;
-                    currentObjectInterface = null;
+                        // set next_free to this slot's position if it is smaller
+                        slots.Remove(selected_slot);
+                        if (selected_slot < next_free)
+                        {
+                            next_free = selected_slot;
+                        }
 
-                    // if there are no more of this item left then remove from dictionary
-                    if (slots.Count <= 0)
-                    {
-                        inventoryDictionary.Remove(item);
+                        currentObject = null;
+                        currentObjectInterface = null;
+
+                        // if there are no more of this item left then remove from dictionary
+                        if (slots.Count <= 0)
+                        {
+                            inventoryDictionary.Remove(item);
+                        }
                     }
                 }
-            }
-            else
-            {
-                currentObject = Instantiate(inventory[selected_slot].GetItem().prefab);
-                currentObjectInterface = currentObject.GetComponent<IObject>();
-                currentObject.GetComponent<Collider>().enabled = false;
+                else
+                {
+                    SetupCurrentObject();
+                }
             }
         }
     }
@@ -205,6 +203,10 @@ public class Inventory : MonoBehaviour
 
     public void IncreaseSelectedSlot()
     {
+        if (currentObject != null)
+        {
+            Destroy(currentObject);
+        }
         selected_slot = (selected_slot + 1) % columns;
         Debug.Log(selected_slot);
         if (inventory[selected_slot].IsEmpty())
@@ -214,14 +216,16 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            currentObject = Instantiate(inventory[selected_slot].GetItem().prefab);
-            currentObjectInterface = currentObject.GetComponent<IObject>();
-            currentObject.GetComponent<Collider>().enabled = false;
+            SetupCurrentObject();
         }
     }
 
     public void DecreaseSelectedSlot()
     {
+        if (currentObject != null)
+        {
+            Destroy(currentObject);
+        }
         selected_slot = (columns + (selected_slot - 1)) % columns;
         Debug.Log(selected_slot);
         if (inventory[selected_slot].IsEmpty())
@@ -231,9 +235,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            currentObject = Instantiate(inventory[selected_slot].GetItem().prefab);
-            currentObjectInterface = currentObject.GetComponent<IObject>();
-            currentObject.GetComponent<Collider>().enabled = false;
+            SetupCurrentObject();
         }
     }
 
@@ -243,5 +245,12 @@ public class Inventory : MonoBehaviour
         {
             currentObjectInterface.Hover();
         }
+    }
+
+    private void SetupCurrentObject()
+    {
+        currentObject = Instantiate(inventory[selected_slot].GetItem().prefab);
+        currentObjectInterface = currentObject.GetComponent<IObject>();
+        currentObjectInterface.Activate();
     }
 }

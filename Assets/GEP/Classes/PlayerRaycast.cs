@@ -32,6 +32,7 @@ public class PlayerRaycast : MonoBehaviour
 
     public Vector3 GetDirection()
     {
+        transform.LookAt(player.transform.position);
         return transform.forward;
     }
 

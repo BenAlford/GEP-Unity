@@ -1,6 +1,7 @@
 public interface IObject
 {
-    public void Use();
+    public void Activate();
+    public bool Use();
 
     public void Hover();
 }

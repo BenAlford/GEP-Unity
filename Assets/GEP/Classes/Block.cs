@@ -9,14 +9,24 @@ public class Block : MonoBehaviour, IObject
     public GameObject item;
     PlayerRaycast pRaycast;
 
+    bool placeable = false;
+
     private void Awake()
     {
         pRaycast = GameObject.FindGameObjectWithTag("RaycastStart").GetComponent<PlayerRaycast>();
     }
 
-    public void Use()
+    public bool Use()
     {
-        GetComponent<Collider>().enabled = true;
+        if (placeable)
+        {
+            GetComponent<Collider>().enabled = true;
+            Color m = GetComponent<Renderer>().material.color;
+            m.a = 1;
+            GetComponent<Renderer>().material.color = m;
+            return true;
+        }
+        return false;
     }
 
     public void Hover()
@@ -96,16 +106,27 @@ public class Block : MonoBehaviour, IObject
 
             if (hitColliders.Length > 0)
             {
+                placeable = false;
                 GetComponent<Renderer>().enabled = false;
             }
             else
             {
+                placeable = true;
                 GetComponent<Renderer>().enabled = true;
             }
         }
         else
         {
+            placeable = false;
             GetComponent<Renderer>().enabled = false;
         }
+    }
+
+    public void Activate()
+    {
+        GetComponent<Collider>().enabled = false;
+        Color m = GetComponent<Renderer>().material.color;
+        m.a = 0.5f;
+        GetComponent<Renderer>().material.color = m;
     }
 }
