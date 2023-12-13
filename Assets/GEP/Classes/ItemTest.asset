@@ -15,4 +15,5 @@ MonoBehaviour:
   max_stack_size: 2
   item_name: Cube
   description: Its a cube smh
+  sprite: {fileID: 21300000, guid: e6d6fc3885c320d4cba105838b6b09f1, type: 3}
   prefab: {fileID: 1492802731207282106, guid: 4ed08b0dfd932c643b1dc56c9c21006d, type: 3}

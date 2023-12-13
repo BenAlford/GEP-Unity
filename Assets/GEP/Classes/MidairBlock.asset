@@ -15,4 +15,5 @@ MonoBehaviour:
   max_stack_size: 5
   item_name: Platform Block
   description: Place a block beneath your feet
+  sprite: {fileID: 21300000, guid: ec7077da6f6cd3747ac27fd9053eb1f9, type: 3}
   prefab: {fileID: 8838111550315855174, guid: 9019a2d9a92b21542b4481d84866e65b, type: 3}

@@ -15,4 +15,5 @@ MonoBehaviour:
   max_stack_size: 10
   item_name: Sphere
   description: Its a sphere smh
+  sprite: {fileID: 21300000, guid: e6d6fc3885c320d4cba105838b6b09f1, type: 3}
   prefab: {fileID: 3484591843935360427, guid: 3e45575bf3522c143a58897b082798a5, type: 3}

@@ -9,5 +9,6 @@ public class ItemDef : ScriptableObject
     public int max_stack_size;
     public string item_name;
     public string description;
+    public Sprite sprite;
     public GameObject prefab;
 }

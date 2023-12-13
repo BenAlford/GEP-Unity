@@ -107,11 +107,11 @@ public class PlayerCharacterInput : MonoBehaviour
         Vector2 a = value.Get<Vector2>();
         if (a.y > 0)
         {
-            inv.IncreaseSelectedSlot();
+            inv.DecreaseSelectedSlot();
         }
         else if (a.y < 0)
         {
-            inv.DecreaseSelectedSlot();
+            inv.IncreaseSelectedSlot();
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Numerics;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using static UnityEditor.Progress;
 
@@ -59,6 +60,11 @@ public class InventorySlot
     {
         return empty;
     }
+
+    public int GetSize()
+    {
+        return size;
+    }
 }
 
 public class Inventory : MonoBehaviour
@@ -70,12 +76,18 @@ public class Inventory : MonoBehaviour
     public ItemDef start_item;
     InventorySlot[] inventory;
     Dictionary<ItemDef, List<int>> inventoryDictionary = new Dictionary<ItemDef, List<int>>();
+    InventoryUIManager invUIManager;
 
     GameObject currentObject = null;
     IObject currentObjectInterface = null;
+    bool currentObjectHoverable;
+
+    InventorySlotUI ui;
 
     private void Awake()
     {
+        invUIManager = GameObject.FindGameObjectWithTag("InventoryUIManager").GetComponent<InventoryUIManager>();
+
         // initialise the array
         inventory = new InventorySlot[rows * columns];
         for (int i = 0; i < inventory.Length; i++)
@@ -102,6 +114,10 @@ public class Inventory : MonoBehaviour
         {
             // tries to add the item to the slot
             bool added_item = inventory[slots.Last()].TryAdd();
+            if (added_item)
+            {
+                invUIManager.SetSlotItemSize(slots.Last(), inventory[slots.Last()].GetSize());
+            }
 
             // if it failed try to add it to a previous slot
             if (!added_item && slots.Count > 1)
@@ -115,6 +131,7 @@ public class Inventory : MonoBehaviour
                         slots.RemoveAt(i);
                         slots.Add(pos);
                         added_item = true;
+                        invUIManager.SetSlotItemSize(pos, inventory[pos].GetSize());
                         break;
                     }
                 }
@@ -129,6 +146,9 @@ public class Inventory : MonoBehaviour
                 {
                     slots.Add(next_free);
                     inventory[next_free].SetItem(item, 1);
+
+
+                    invUIManager.SetSlotItem(next_free, item, 1);
 
                     if (next_free == selected_slot)
                     {
@@ -148,6 +168,8 @@ public class Inventory : MonoBehaviour
             slots.Add(next_free);
             inventoryDictionary.Add(item, slots);
             inventory[next_free].SetItem(item, 1);
+
+            invUIManager.SetSlotItem(next_free, item, 1);
 
             if (next_free == selected_slot)
             {
@@ -190,6 +212,9 @@ public class Inventory : MonoBehaviour
 
                         // set next_free to this slot's position if it is smaller
                         slots.Remove(selected_slot);
+
+                        invUIManager.ClearSlot(selected_slot);
+
                         if (selected_slot < next_free)
                         {
                             next_free = selected_slot;
@@ -207,6 +232,7 @@ public class Inventory : MonoBehaviour
                 }
                 else
                 {
+                    invUIManager.SetSlotItemSize(selected_slot, inventory[selected_slot].GetSize());
                     SetupCurrentObject();
                 }
             }
